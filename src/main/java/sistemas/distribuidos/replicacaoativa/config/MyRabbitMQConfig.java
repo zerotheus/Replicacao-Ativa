@@ -1,6 +1,7 @@
 package sistemas.distribuidos.replicacaoativa.config;
 
 import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -40,6 +41,11 @@ public class MyRabbitMQConfig {
     @Bean
     public FanoutExchange executeExchange() {
         return new FanoutExchange("Execute", true, false);
+    }
+
+    @Bean
+    public Queue executeQueue() {
+        return new Queue("Execute", true);
     }
 
     @Bean
