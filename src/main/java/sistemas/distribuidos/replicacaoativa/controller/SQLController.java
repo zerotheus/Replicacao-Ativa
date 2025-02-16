@@ -15,11 +15,12 @@ import sistemas.distribuidos.replicacaoativa.model.SQLCommand;
 @RequiredArgsConstructor
 public class SQLController {
 
-    private RabbitTemplate rabbitTemplate;
+    private final RabbitTemplate rabbitTemplate;
 
     @PostMapping
     public ResponseEntity<SQLCommand> enviarComandoAoGrupo(@RequestBody SQLCommand sqlCommand) {
         System.out.println(sqlCommand);
+        rabbitTemplate.convertAndSend("Execute", sqlCommand);
         return ResponseEntity.ok().body(sqlCommand);
     }
 
