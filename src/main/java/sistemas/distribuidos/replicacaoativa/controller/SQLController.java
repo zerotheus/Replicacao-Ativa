@@ -19,8 +19,7 @@ public class SQLController {
 
     @PostMapping
     public ResponseEntity<SQLCommand> enviarComandoAoGrupo(@RequestBody SQLCommand sqlCommand) {
-        System.out.println(sqlCommand);
-        rabbitTemplate.convertAndSend("Execute", sqlCommand);
+        rabbitTemplate.convertAndSend("Execute","", sqlCommand);
         return ResponseEntity.ok().body(sqlCommand);
     }
 
