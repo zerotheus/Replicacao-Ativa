@@ -13,4 +13,9 @@ public class RabbitMqMessageListener {
         System.out.println(sql.toString() + " Sql Executado, Executor Id: " + RabbitMQMessageService.myId);
     }
 
+    @RabbitListener(queues = "#{prepareKiwi.getName}")
+    public void preparar(SQLCommand sql) {
+        System.out.println(sql.toString() + " Sql preparado, Executor Id: " + RabbitMQMessageService.myId);
+    }
+
 }

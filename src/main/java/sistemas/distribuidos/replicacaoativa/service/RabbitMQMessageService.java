@@ -14,10 +14,16 @@ public class RabbitMQMessageService {
 
     public static final UUID myId = UUID.randomUUID();
     private final String kiwiName = "sql-executor-" + myId;
+    private final String prepareKiwi = "kiwi-prepare-" + myId;
 
     @Bean
     public Queue criarFila() {
         return new Queue(kiwiName, false, true, true);
+    }
+
+    @Bean
+    public Queue prepareKiwi() {
+        return new Queue(prepareKiwi, false, true, true);
     }
 
 }

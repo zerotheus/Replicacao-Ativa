@@ -46,8 +46,13 @@ public class MyRabbitMQConfig {
     }
 
     @Bean
-    Binding executeKiwiToExecuteExchange(Queue criarFila, FanoutExchange executeExchange) {
+    public Binding executeKiwiToExecuteExchange(Queue criarFila, FanoutExchange executeExchange) {
         return BindingBuilder.bind(criarFila).to(executeExchange);
+    }
+
+    @Bean
+    public Binding prepareKiwiToExecuteExchange(Queue prepareKiwi, TopicExchange adicaoDeMembroESelecaoDeLider) {
+        return BindingBuilder.bind(prepareKiwi).to(adicaoDeMembroESelecaoDeLider).with("prepare");
     }
 
     @Bean
