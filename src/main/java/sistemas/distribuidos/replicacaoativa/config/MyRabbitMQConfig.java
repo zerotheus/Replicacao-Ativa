@@ -51,8 +51,8 @@ public class MyRabbitMQConfig {
     }
 
     @Bean
-    public Binding prepareKiwiToExecuteExchange(Queue prepareKiwi, TopicExchange adicaoDeMembroESelecaoDeLider) {
-        return BindingBuilder.bind(prepareKiwi).to(adicaoDeMembroESelecaoDeLider).with("prepare");
+    public Binding prepareKiwiToExecuteExchange(Queue commandKiwi, TopicExchange adicaoDeMembroESelecaoDeLider) {
+        return BindingBuilder.bind(commandKiwi).to(adicaoDeMembroESelecaoDeLider).with("command");
     }
 
     @Bean

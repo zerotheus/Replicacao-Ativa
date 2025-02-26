@@ -10,32 +10,29 @@ services:
     ports:
       - "5433:5432"
     networks:
-      intranet1:
-        ipv4_address: 10.10.1.2
+      internet:
 
   postgres2:
     image: "postgres:latest"
     environment:
-      - "POSTGRES_DB=mydatabase2"
+      - "POSTGRES_DB=mydatabase"
       - "POSTGRES_PASSWORD=secret"
       - "POSTGRES_USER=myuser"
     ports:
       - "5434:5432"
     networks:
-      intranet2:
-        ipv4_address: 10.10.2.2
+      internet:
 
   postgres3:
     image: "postgres:latest"
     environment:
-      - "POSTGRES_DB=mydatabase3"
+      - "POSTGRES_DB=mydatabase"
       - "POSTGRES_PASSWORD=secret"
       - "POSTGRES_USER=myuser"
     ports:
-      - "5435:5432"
+      - "5436:5432"
     networks:
-      intranet3:
-        ipv4_address: 10.10.3.2
+      internet:
 
   rabbitmq:
     image: rabbitmq:management
@@ -47,32 +44,96 @@ services:
       - "15672:15672"
     networks:
       - internet
-      - intranet_geral
+    
+  no:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres1:5432/mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: secret
+      INSTANCE_ID: 0
+      PORTA: 8080
+      RABBITMQ_HOST: rabbitmq  # Adicionado
+    depends_on:
+      - postgres1
+      - rabbitmq  # Garantir que o RabbitMQ esteja rodando primeiro
+    restart: on-failure
+    networks:
+      - internet
+
+  nodois:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8082:8080"
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres2:5432/mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: secret
+      INSTANCE_ID: 1
+      PORTA: 8080
+      RABBITMQ_HOST: rabbitmq  # Adicionado
+    depends_on:
+      - no
+      - postgres2
+      - rabbitmq
+    restart: on-failure
+    networks:
+      - internet
+
+  notres:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8083:8080"
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres3:5432/mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: secret
+      INSTANCE_ID: 2
+      PORTA: 8080
+      RABBITMQ_HOST: rabbitmq  # Adicionado
+    depends_on:
+      - no
+      - postgres3
+      - rabbitmq
+    restart: on-failure
+    networks:
+      - internet
+
+
+
 
 networks:
   internet:
     driver: bridge
 
-  intranet_geral:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: "10.10.0.0/24"
-
-  intranet1:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: "10.10.1.0/24"
-
-  intranet2:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: "10.10.2.0/24"
-
-  intranet3:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: "10.10.3.0/24"
+#  intranet_geral:
+#    driver: bridge
+#    ipam:
+#      config:
+#        - subnet: "10.10.0.0/24"
+#
+#  intranet1:
+#    driver: bridge
+#    ipam:
+#      config:
+#        - subnet: "10.10.1.0/24"
+#
+#  intranet2:
+#    driver: bridge
+#    ipam:
+#      config:
+#        - subnet: "10.10.2.0/24"
+#
+#  intranet3:
+#    driver: bridge
+#    ipam:
+#      config:
+#        - subnet: "10.10.3.0/24"

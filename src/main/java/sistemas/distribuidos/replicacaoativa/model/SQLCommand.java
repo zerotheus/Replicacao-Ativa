@@ -8,4 +8,9 @@ import lombok.Data;
 public class SQLCommand {
     private UUID id = UUID.randomUUID();
     private String sql;
+
+    public String getSql() {
+        return this.sql + ";";
+    }
+
 }
