@@ -57,10 +57,10 @@ services:
       POSTGRES_PASSWORD: secret
       INSTANCE_ID: 0
       PORTA: 8080
-      RABBITMQ_HOST: rabbitmq  # Adicionado
+      RABBITMQ_HOST: rabbitmq  
     depends_on:
       - postgres1
-      - rabbitmq  # Garantir que o RabbitMQ esteja rodando primeiro
+      - rabbitmq  
     restart: on-failure
     networks:
       - internet
@@ -77,7 +77,7 @@ services:
       POSTGRES_PASSWORD: secret
       INSTANCE_ID: 1
       PORTA: 8080
-      RABBITMQ_HOST: rabbitmq  # Adicionado
+      RABBITMQ_HOST: rabbitmq  
     depends_on:
       - no
       - postgres2
@@ -98,7 +98,7 @@ services:
       POSTGRES_PASSWORD: secret
       INSTANCE_ID: 2
       PORTA: 8080
-      RABBITMQ_HOST: rabbitmq  # Adicionado
+      RABBITMQ_HOST: rabbitmq  
     depends_on:
       - no
       - postgres3
@@ -113,27 +113,3 @@ services:
 networks:
   internet:
     driver: bridge
-
-#  intranet_geral:
-#    driver: bridge
-#    ipam:
-#      config:
-#        - subnet: "10.10.0.0/24"
-#
-#  intranet1:
-#    driver: bridge
-#    ipam:
-#      config:
-#        - subnet: "10.10.1.0/24"
-#
-#  intranet2:
-#    driver: bridge
-#    ipam:
-#      config:
-#        - subnet: "10.10.2.0/24"
-#
-#  intranet3:
-#    driver: bridge
-#    ipam:
-#      config:
-#        - subnet: "10.10.3.0/24"
