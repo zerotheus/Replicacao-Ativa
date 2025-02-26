@@ -1,25 +1,139 @@
+version: "3.8"
+
 services:
-  postgres:
-    image: 'postgres:latest'
+  postgres1:
+    image: "postgres:latest"
     environment:
-      - 'POSTGRES_DB=mydatabase'
-      - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - "POSTGRES_DB=mydatabase"
+      - "POSTGRES_PASSWORD=secret"
+      - "POSTGRES_USER=myuser"
     ports:
-      - '5433:5432'
+      - "5433:5432"
     networks:
-            - rede
+      internet:
+
+  postgres2:
+    image: "postgres:latest"
+    environment:
+      - "POSTGRES_DB=mydatabase"
+      - "POSTGRES_PASSWORD=secret"
+      - "POSTGRES_USER=myuser"
+    ports:
+      - "5434:5432"
+    networks:
+      internet:
+
+  postgres3:
+    image: "postgres:latest"
+    environment:
+      - "POSTGRES_DB=mydatabase"
+      - "POSTGRES_PASSWORD=secret"
+      - "POSTGRES_USER=myuser"
+    ports:
+      - "5436:5432"
+    networks:
+      internet:
+
   rabbitmq:
     image: rabbitmq:management
     environment:
-      - 'RABBITMQ_DEFAULT_PASS=secret'
-      - 'RABBITMQ_DEFAULT_USER=myuser'
+      - "RABBITMQ_DEFAULT_PASS=secret"
+      - "RABBITMQ_DEFAULT_USER=myuser"
     ports:
-      - '5672:5672'
-      - '15672:15672'
+      - "5672:5672"
+      - "15672:15672"
     networks:
-            - rede
+      - internet
+    
+  no:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres1:5432/mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: secret
+      INSTANCE_ID: 0
+      PORTA: 8080
+      RABBITMQ_HOST: rabbitmq  # Adicionado
+    depends_on:
+      - postgres1
+      - rabbitmq  # Garantir que o RabbitMQ esteja rodando primeiro
+    restart: on-failure
+    networks:
+      - internet
+
+  nodois:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8082:8080"
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres2:5432/mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: secret
+      INSTANCE_ID: 1
+      PORTA: 8080
+      RABBITMQ_HOST: rabbitmq  # Adicionado
+    depends_on:
+      - no
+      - postgres2
+      - rabbitmq
+    restart: on-failure
+    networks:
+      - internet
+
+  notres:
+    build: .
+    env_file:
+      - .env
+    ports:
+      - "8083:8080"
+    environment:
+      POSTGRES_URL: jdbc:postgresql://postgres3:5432/mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: secret
+      INSTANCE_ID: 2
+      PORTA: 8080
+      RABBITMQ_HOST: rabbitmq  # Adicionado
+    depends_on:
+      - no
+      - postgres3
+      - rabbitmq
+    restart: on-failure
+    networks:
+      - internet
+
+
+
 
 networks:
-    rede:
-        driver: bridge
+  internet:
+    driver: bridge
+
+#  intranet_geral:
+#    driver: bridge
+#    ipam:
+#      config:
+#        - subnet: "10.10.0.0/24"
+#
+#  intranet1:
+#    driver: bridge
+#    ipam:
+#      config:
+#        - subnet: "10.10.1.0/24"
+#
+#  intranet2:
+#    driver: bridge
+#    ipam:
+#      config:
+#        - subnet: "10.10.2.0/24"
+#
+#  intranet3:
+#    driver: bridge
+#    ipam:
+#      config:
+#        - subnet: "10.10.3.0/24"

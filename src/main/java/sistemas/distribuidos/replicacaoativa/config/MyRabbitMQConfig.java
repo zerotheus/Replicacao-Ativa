@@ -1,6 +1,9 @@
 package sistemas.distribuidos.replicacaoativa.config;
 
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -39,12 +42,22 @@ public class MyRabbitMQConfig {
 
     @Bean
     public FanoutExchange executeExchange() {
-        return new FanoutExchange("Execute", true, false);
+        return new FanoutExchange("Execute", false, false);
     }
 
     @Bean
-    public TopicExchange adicaoDeMembroESelecaoDeLider() {
-        return new TopicExchange("Membros", false, false);
+    public Binding executeKiwiToExecuteExchange(Queue criarFila, FanoutExchange executeExchange) {
+        return BindingBuilder.bind(criarFila).to(executeExchange);
+    }
+
+    @Bean
+    public Binding heartKiwiToExecuteExchange(Queue heartKiwi, TopicExchange heartBeating) {
+        return BindingBuilder.bind(heartKiwi).to(heartBeating).with("beat");
+    }
+
+    @Bean
+    public TopicExchange heartBeating() {
+        return new TopicExchange("Heart", false, false);
     }
 
 }
