@@ -1,5 +1,7 @@
 package sistemas.distribuidos.replicacaoativa.config;
 
+import java.util.UUID;
+
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueInformation;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -10,6 +12,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
+import sistemas.distribuidos.replicacaoativa.service.HeartBeatService;
+import sistemas.distribuidos.replicacaoativa.service.RabbitMQMessageService;
 
 @RequiredArgsConstructor
 @Component
@@ -29,24 +33,29 @@ public class RegistrationConfig implements CommandLineRunner {
 
     public boolean pedirLideranca() {
         System.out.println("Pedir liderança");
+        QueueInformation info = rabbitAdmin.getQueueInfo("MembrosKiwi");
+        Queue kiwi = new Queue("MembrosKiwi", true, false, false);
+        if (info == null) {
+            rabbitAdmin.declareQueue(kiwi);
+        }
+        rabbitAdmin.getRabbitTemplate().convertAndSend("MembrosKiwi", "MyUuid:" + RabbitMQMessageService.myId);
         if (instanceId != 0)
             return false;
-        QueueInformation info = rabbitAdmin.getQueueInfo("MembrosKiwi");
-        if (info == null) {
-            liderançaObtida = true;
-            Queue kiwi = new Queue("MembrosKiwi", false, false, true);
-            rabbitAdmin.declareQueue(kiwi);
-            escutarFila(kiwi);
-            return true;
-        }
-        return false;
+        liderançaObtida = true;
+        escutarFila(kiwi);
+        return true;
     }
 
     public void escutarFila(Queue kiwi) {
         this.container = new SimpleMessageListenerContainer(connectionFactory);
         container.setQueueNames(kiwi.getName());
         container.setMessageListener(message -> {
-            System.out.println(new String(message.getBody()) + "Messagem para o lider");
+            String mensagem = new String(message.getBody());
+            System.out.println(mensagem + "Messagem para o lider");
+            if (mensagem.contains("MyUuid")) {
+                String[] mensagemDivida = mensagem.split(":");
+                HeartBeatService.replicantesUuids.add(UUID.fromString(mensagemDivida[1]));
+            }
         });
         container.start();
     }

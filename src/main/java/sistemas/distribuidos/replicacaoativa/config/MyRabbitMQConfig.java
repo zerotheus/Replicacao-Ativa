@@ -51,13 +51,13 @@ public class MyRabbitMQConfig {
     }
 
     @Bean
-    public Binding prepareKiwiToExecuteExchange(Queue commandKiwi, TopicExchange adicaoDeMembroESelecaoDeLider) {
-        return BindingBuilder.bind(commandKiwi).to(adicaoDeMembroESelecaoDeLider).with("command");
+    public Binding heartKiwiToExecuteExchange(Queue heartKiwi, TopicExchange heartBeating) {
+        return BindingBuilder.bind(heartKiwi).to(heartBeating).with("beat");
     }
 
     @Bean
-    public TopicExchange adicaoDeMembroESelecaoDeLider() {
-        return new TopicExchange("Membros", false, false);
+    public TopicExchange heartBeating() {
+        return new TopicExchange("Heart", false, false);
     }
 
 }
