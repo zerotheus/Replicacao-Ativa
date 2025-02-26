@@ -53,8 +53,8 @@ public class RegistrationConfig implements CommandLineRunner {
             String mensagem = new String(message.getBody());
             System.out.println(mensagem + "Messagem para o lider");
             if (mensagem.contains("MyUuid")) {
-                String[] mensagemDivida = mensagem.split(":");
-                HeartBeatService.replicantesUuids.add(UUID.fromString(mensagemDivida[1]));
+                String[] mensagemDividida = mensagem.split(":");
+                HeartBeatService.replicantesUuids.add(UUID.fromString(mensagemDividida[1]));
             }
         });
         container.start();
