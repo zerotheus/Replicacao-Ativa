@@ -46,13 +46,13 @@ public class MyRabbitMQConfig {
     }
 
     @Bean
-    public Binding executeKiwiToExecuteExchange(Queue criarFila, FanoutExchange executeExchange) {
+    public Binding executeQueueToExecuteExchange(Queue criarFila, FanoutExchange executeExchange) {
         return BindingBuilder.bind(criarFila).to(executeExchange);
     }
 
     @Bean
-    public Binding heartKiwiToExecuteExchange(Queue heartKiwi, TopicExchange heartBeating) {
-        return BindingBuilder.bind(heartKiwi).to(heartBeating).with("beat");
+    public Binding heartQueueToExecuteExchange(Queue heartQueue, TopicExchange heartBeating) {
+        return BindingBuilder.bind(heartQueue).to(heartBeating).with("beat");
     }
 
     @Bean

@@ -33,22 +33,22 @@ public class RegistrationConfig implements CommandLineRunner {
 
     public boolean pedirLideranca() {
         System.out.println("Pedir liderança");
-        QueueInformation info = rabbitAdmin.getQueueInfo("MembrosKiwi");
-        Queue kiwi = new Queue("MembrosKiwi", true, false, false);
+        QueueInformation info = rabbitAdmin.getQueueInfo("MembrosQueue");
+        Queue queue = new Queue("MembrosQueue", true, false, false);
         if (info == null) {
-            rabbitAdmin.declareQueue(kiwi);
+            rabbitAdmin.declareQueue(queue);
         }
-        rabbitAdmin.getRabbitTemplate().convertAndSend("MembrosKiwi", "MyUuid:" + RabbitMQMessageService.myId);
+        rabbitAdmin.getRabbitTemplate().convertAndSend("MembrosQueue", "MyUuid:" + RabbitMQMessageService.myId);
         if (instanceId != 0)
             return false;
         liderançaObtida = true;
-        escutarFila(kiwi);
+        escutarFila(queue);
         return true;
     }
 
-    public void escutarFila(Queue kiwi) {
+    public void escutarFila(Queue queue) {
         this.container = new SimpleMessageListenerContainer(connectionFactory);
-        container.setQueueNames(kiwi.getName());
+        container.setQueueNames(queue.getName());
         container.setMessageListener(message -> {
             String mensagem = new String(message.getBody());
             System.out.println(mensagem + "Messagem para o lider");

@@ -24,17 +24,17 @@ public class HeartBeatService {
 
     @Scheduled(fixedRate = 7000)
     private void heartBeat() {
-        replicantesUuids.forEach(kiwiUUID -> esperarBeat(kiwiUUID));
+        replicantesUuids.forEach(queueUUID -> esperarBeat(queueUUID));
     }
 
-    private void esperarBeat(UUID kiwiUUID) {
-        System.out.println(kiwiUUID);
+    private void esperarBeat(UUID queueUUID) {
+        System.out.println(queueUUID);
         rabbitTemplate.setReplyTimeout(3000);
-        Object resposta = rabbitTemplate.convertSendAndReceive("heart-beat-kiwi-" + kiwiUUID,
+        Object resposta = rabbitTemplate.convertSendAndReceive("heart-beat-queue-" + queueUUID,
                 new HeartBeat(0, RabbitMQMessageService.myId, "Lider"));
         if (resposta == null) {
-            System.out.println("delete:sql-kiwi-" + kiwiUUID);
-            // rabbitAdmin.deleteQueue("sql-kiwi-" + kiwiUUID);
+            System.out.println("delete:sql-queue-" + queueUUID);
+            // rabbitAdmin.deleteQueue("sql-queue-" + queueUUID);
             return;
         }
         System.out.println(((HeartBeat) resposta).toString());

@@ -10,14 +10,14 @@ import lombok.NoArgsConstructor;
 public class SQLResponse {
 
     private UUID uuid;
-    private UUID kiwiUUID;
+    private UUID queueUUID;
     private Integer instanceId;
     private boolean status;
     private String sql;
 
-    public SQLResponse(UUID uuid, UUID kiwiUUID, Integer instanceId, boolean status, String sql) {
+    public SQLResponse(UUID uuid, UUID queueUUID, Integer instanceId, boolean status, String sql) {
         this.uuid = uuid;
-        this.kiwiUUID = kiwiUUID;
+        this.queueUUID = queueUUID;
         this.instanceId = instanceId;
         this.status = status;
         this.sql = sql;

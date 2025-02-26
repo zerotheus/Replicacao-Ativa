@@ -30,14 +30,14 @@ public class RabbitMqMessageListener {
         try {
             jdbcTemplate.execute(sql.getSql());
         } catch (Exception e) {
-            rabbitTemplate.convertAndSend("MembrosKiwi",
+            rabbitTemplate.convertAndSend("MembrosQueue",
                     new SQLResponse(sql.getId(), RabbitMQMessageService.myId, instanceId, false, sql.getSql()));
         }
-        rabbitTemplate.convertAndSend("MembrosKiwi",
+        rabbitTemplate.convertAndSend("MembrosQueue",
                 new SQLResponse(sql.getId(), RabbitMQMessageService.myId, instanceId, true, sql.getSql()));
     }
 
-    @RabbitListener(queues = "#{heartKiwi.getName}")
+    @RabbitListener(queues = "#{heartQueue.getName}")
     public HeartBeat heart(HeartBeat beat) throws Exception {
         // System.out.println(beat.toString());
         Integer espera = new Random().nextInt(7);

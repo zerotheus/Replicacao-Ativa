@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class HeartBeat {
 
     private Integer instanceId;
-    private UUID kiwisUuid;
+    private UUID queuesUuid;
     private String message;
 
 }

@@ -18,17 +18,17 @@ public class RabbitMQMessageService {
     public static final UUID myId = UUID.randomUUID();
     @Value("${app.my.id}")
     private Integer instanceId;
-    private final String kiwiName = "sql-kiwi-" + myId;
-    private final String heartKiwi = "heart-beat-kiwi-" + myId;
+    private final String queueName = "sql-queue-" + myId;
+    private final String heartQueue = "heart-beat-queue-" + myId;
 
     @Bean
     public Queue criarFila() {
-        return new Queue(kiwiName, false, true, true);
+        return new Queue(queueName, false, true, true);
     }
 
     @Bean
-    public Queue heartKiwi() {
-        return new Queue(heartKiwi, false, true, true);
+    public Queue heartQueue() {
+        return new Queue(heartQueue, false, true, true);
     }
 
 }
