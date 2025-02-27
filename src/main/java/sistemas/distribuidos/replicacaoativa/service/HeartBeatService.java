@@ -34,7 +34,8 @@ public class HeartBeatService {
                 new HeartBeat(0, RabbitMQMessageService.myId, "Lider"));
         if (resposta == null) {
             System.out.println("delete:sql-queue-" + queueUUID);
-            // rabbitAdmin.deleteQueue("sql-queue-" + queueUUID);
+            rabbitAdmin.deleteQueue("sql-kiwi-" + queueUUID);
+            rabbitAdmin.deleteQueue("heart-beat-kiwi-" + queueUUID);
             return;
         }
         System.out.println(((HeartBeat) resposta).toString());
